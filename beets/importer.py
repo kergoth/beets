@@ -565,7 +565,7 @@ class ImportTask(BaseImportTask):
         values.
         """
         for field, view in config['import']['set_fields'].items():
-            value = view.get()
+            value = self.album.evaluate_template(view.get())
             log.debug(u'Set field {1}={2} for {0}',
                       displayable_path(self.paths),
                       field,
@@ -939,7 +939,7 @@ class SingletonImportTask(ImportTask):
         values.
         """
         for field, view in config['import']['set_fields'].items():
-            value = view.get()
+            value = self.item.evaluate_template(view.get())
             log.debug(u'Set field {1}={2} for {0}',
                       displayable_path(self.paths),
                       field,

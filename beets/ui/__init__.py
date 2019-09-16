@@ -708,7 +708,7 @@ def show_model_changes(new, old=None, fields=None, always=False):
 
     # Build up lines showing changed fields.
     changes = []
-    for field in old:
+    for field in sorted(old):
         # Subset of the fields. Never show mtime.
         if field == 'mtime' or (fields and field not in fields):
             continue
@@ -719,7 +719,7 @@ def show_model_changes(new, old=None, fields=None, always=False):
             changes.append(u'  {0}: {1}'.format(field, line))
 
     # New fields.
-    for field in set(new) - set(old):
+    for field in sorted(set(new) - set(old)):
         if fields and field not in fields:
             continue
 

@@ -38,7 +38,7 @@ from beets.autotag.match import distance
 from mediafile import MediaFile
 from beets import config
 from beets import plugins
-from confuse import ConfigError
+from confuse import ConfigError, config_dirs
 from beets import util
 from beets.util import syspath, MoveOperation
 
@@ -718,14 +718,8 @@ class ConfigTest(unittest.TestCase, TestHelper, _common.Assertions):
         commands.default_commands.append(self.test_cmd)
 
         # Default user configuration
-        if platform.system() == 'Windows':
-            self.user_config_dir = os.path.join(
-                self.temp_dir, b'AppData', b'Roaming', b'beets'
-            )
-        else:
-            self.user_config_dir = os.path.join(
-                self.temp_dir, b'.config', b'beets'
-            )
+        self.user_config_dir = os.path.join(util.bytestring_path(config_dirs()[0]),
+                                            b'beets')
         os.makedirs(self.user_config_dir)
         self.user_config_path = os.path.join(self.user_config_dir,
                                              b'config.yaml')

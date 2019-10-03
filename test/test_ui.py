@@ -1159,6 +1159,13 @@ class PathFormatTest(_common.TestCase):
         self.assertEqual(tmpl.original, u'bar')
         self.assertEqual(pf[1:], default_formats)
 
+    def test_multiline_formats_with_strip(self):
+        config['paths'] = {u'default': '  foo\n    bar\n    baz  '}
+        pf = ui.get_path_formats()
+        key, tmpl = pf[0]
+        self.assertEqual(key, u'default')
+        self.assertEqual(tmpl.original, u'foobarbaz')
+
 
 @_common.slow_test()
 class PluginTest(_common.TestCase, TestHelper):

@@ -617,7 +617,10 @@ def get_path_formats(subview=None):
     subview = subview or config['paths']
     for query, view in subview.items():
         query = PF_KEY_QUERIES.get(query, query)  # Expand common queries.
-        path_formats.append((query, template(view.as_str())))
+        viewstr = view.as_str()
+        if '\n' in viewstr:
+            viewstr = ''.join(v.strip() for v in viewstr.split('\n')).replace('\n', '')
+        path_formats.append((query, template(viewstr)))
     return path_formats
 
 

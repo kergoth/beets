@@ -624,11 +624,12 @@ def get_path_formats(subview=None):
     return path_formats
 
 
-def get_replacements():
+def get_replacements(subview=None):
     """Confuse validation function that reads regex/string pairs.
     """
     replacements = []
-    for pattern, repl in config['replace'].get(dict).items():
+    subview = subview or config['replace']
+    for pattern, repl in subview.get(dict).items():
         repl = repl or ''
         try:
             replacements.append((re.compile(pattern), repl))

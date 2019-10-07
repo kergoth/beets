@@ -257,26 +257,27 @@ def distance(items, album_info, mapping):
     for track in album_info.tracks:
         if track.medium_total and track.medium not in medium_totals:
             medium_totals[track.medium] = track.medium_total
+
     medium_all_total = sum(medium_totals.values())
+    if medium_all_total:
+        # If we have a consensus, and it's the same as the all-disc total,
+        # short-circuit the logic and take the simple approach.
+        if consensus and likelies['tracktotal'] and likelies['tracktotal'] == medium_all_total:
+            pass
+        else:
+            # The imported track may have tags for per disc numbering or not,
+            # so check for both.
+            def item_disc(i):
+                return i.disc or 0
 
-    # If we have a consensus, and it's the same as the all-disc total,
-    # short-circuit the logic and take the simple approach.
-    if consensus and likelies['tracktotal'] and likelies['tracktotal'] == medium_all_total:
-        pass
-    else:
-        # The imported track may have tags for per disc numbering or not,
-        # so check for both.
-        def item_disc(i):
-            return i.disc or 0
-
-        items_by_disc = sorted(mapping.keys(), key=item_disc)
-        grouped_items = groupby(items_by_disc, item_disc)
-        for disc, disc_items in grouped_items:
-            medium_total = medium_totals.get(disc, 0)
-            tracktotals = set(i.tracktotal for i in disc_items if i.tracktotal)
-            for tracktotal in tracktotals:
-                if tracktotal != medium_all_total and medium_total:
-                    dist.add_number('tracktotal', medium_total, tracktotal)
+            items_by_disc = sorted(mapping.keys(), key=item_disc)
+            grouped_items = groupby(items_by_disc, item_disc)
+            for disc, disc_items in grouped_items:
+                medium_total = medium_totals.get(disc, 0)
+                tracktotals = set(i.tracktotal for i in disc_items if i.tracktotal)
+                for tracktotal in tracktotals:
+                    if tracktotal != medium_all_total and medium_total:
+                        dist.add_number('tracktotal', medium_total, tracktotal)
 
     # Missing tracks.
     for i in range(len(album_info.tracks) - len(mapping)):
